@@ -173,6 +173,7 @@ parts:
       - -usr/lib/*/libhistory.so*
       # Part of libfuse2, this app doesn't use those shared objects
       - -usr/lib/*/libulockmgr.so*
+      - -lib/*/libulockmgr.so*
       # OpenEXR is pulled in by FreeImage, but those parts are unused
       - -usr/lib/*/libOpenEXRCore-3_1.so*
       - -usr/lib/*/libOpenEXRUtil-3_1.so*
