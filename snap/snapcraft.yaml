@@ -203,6 +203,8 @@ apps:
     command: usr/bin/mega-cmd
   mega-cmd-server:
     command: usr/bin/mega-cmd-server
+    extensions:
+      - gpu
   mega-configure:
     command: usr/bin/mega-configure
   mega-confirm:
