@@ -1,0 +1,25 @@
+From 87bfcc9f39b51c1984eb9a3a53a579f1f7438365 Mon Sep 17 00:00:00 2001
+From: Haowen Liu <liu.haowen.andy@gmail.com>
+Date: Sun, 19 Jul 2026 21:24:32 -0400
+Subject: [PATCH 1/3] Skip cloning vcpkg if VCPKG_ROOT is not set
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 116ed62e..ac2985f3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -39,7 +39,7 @@ execute_process(
+ )
+ endif()
+ 
+-if((NOT WIN32 OR BASH_VERSION_RESULT EQUAL 0) AND NOT EXISTS ${VCPKG_ROOT})
++if((NOT WIN32 OR BASH_VERSION_RESULT EQUAL 0) AND VCPKG_ROOT AND NOT EXISTS ${VCPKG_ROOT})
+     message(STATUS "vcpkg will be cloned into ${VCPKG_ROOT}")
+     execute_process(
+         #TODO: have the same for windows ... or at least check if bash is available
+-- 
+2.53.0
+

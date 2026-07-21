@@ -1,0 +1,200 @@
+name: lunacd-megacmd
+base: core24
+version: '2.5.2'
+summary: Command Line Interactive and Scriptable Application to access MEGA
+description: |
+  MEGAcmd provides non UI access to MEGA services. It intends to offer all the
+  functionality with your MEGA account via commands. It features synchronization,
+  backup of local folders into your MEGA account and a webdav/streaming server.
+
+  Unofficial build of MEGAcmd. Not affiliated with, endorsed by, or supported by
+  MEGA Limited.
+
+grade: devel
+confinement: devmode
+
+parts:
+  gn:
+    plugin: nil
+    source: https://gn.googlesource.com/gn
+    source-type: git
+    source-commit: 22c9eba8c5262cb4d2d08fe9fe258b1bde78cfc9
+    override-build: |
+      python3 build/gen.py --allow-warning
+      ninja -C out
+      install -Dm755 out/gn ${CRAFT_PART_INSTALL}/usr/bin/gn
+    build-environment:
+      - CC: gcc
+      - CXX: g++
+    build-packages:
+      - ninja-build
+      - python3
+    prime:
+      - -*
+
+  pdfium:
+    after:
+      - gn
+    plugin: nil
+    override-pull: |
+      git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+      git -C depot_tools checkout 1709e20d5ca2afe97bfa726168719c3b77eb9883
+      PATH=$PWD/depot_tools:$PATH gclient config --name $PWD --unmanaged \
+        https://pdfium.googlesource.com/pdfium.git@3492e7a8feee9f9c9c92818d291fd6b0ec83b275 \
+        --custom-var=checkout_configuration=minimal
+      PATH=$PWD/depot_tools:$PATH gclient sync
+    override-build: |
+      gn gen out --args='
+          is_debug=false
+          is_component_build = true
+          pdf_enable_v8=false
+          pdf_is_standalone=true
+        '
+      ninja -C out
+      install -d "${CRAFT_PART_INSTALL}/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}"
+      install -d "${CRAFT_PART_INSTALL}/usr/include"
+      install -m644 out/*.so "${CRAFT_PART_INSTALL}/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}"
+      cp -r public/*.h "${CRAFT_PART_INSTALL}/usr/include/"
+
+      # Install CMake config
+      CMAKE_DIR="${CRAFT_PART_INSTALL}/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/cmake/pdfium"
+      install -d "${CMAKE_DIR}"
+      cat > "${CMAKE_DIR}/pdfium-config.cmake" <<'EOF'
+      # Locate this file's own directory, then walk up to the install prefix.
+      # <prefix>/usr/lib/cmake/pdfium/pdfium-config.cmake -> <prefix>/usr
+      get_filename_component(_pdfium_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../../.." ABSOLUTE)
+
+      if(NOT TARGET pdfium::pdfium)
+          add_library(pdfium::pdfium SHARED IMPORTED)
+          set_target_properties(pdfium::pdfium PROPERTIES
+              IMPORTED_LOCATION "${_pdfium_prefix}/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/libpdfium.so"
+              INTERFACE_INCLUDE_DIRECTORIES "${_pdfium_prefix}/usr/include"
+          )
+      endif()
+
+      set(pdfium_FOUND TRUE)
+      set(PDFIUM_LIBRARIES pdfium::pdfium)
+      set(PDFIUM_INCLUDE_DIRS "${_pdfium_prefix}/usr/include")
+      EOF
+
+      # Install pkgconfig
+      PKGCONFIG_DIR="${CRAFT_PART_INSTALL}/usr/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}/pkgconfig"
+      install -d "${PKGCONFIG_DIR}"
+
+      cat > "${PKGCONFIG_DIR}/pdfium.pc" <<EOF
+      prefix=\${pcfiledir}/../../..
+      libdir=\${exec_prefix}/lib/${CRAFT_ARCH_TRIPLET_BUILD_FOR}
+      includedir=\${prefix}/include
+
+      Name: pdfium
+      Description: PDF rendering library
+      Version: 7961
+      Libs: -L\${libdir} -lpdfium
+      Cflags: -I\${includedir}
+      EOF
+    prime:
+      - -usr/lib/*/pkgconfig/*.pc
+      - -usr/lib/*/cmake/*.cmake
+      - -usr/include/*
+
+  megacmd:
+    after:
+      - pdfium
+    plugin: cmake
+    source: https://github.com/meganz/MEGAcmd.git
+    source-type: git
+    source-tag: ${SNAPCRAFT_PROJECT_VERSION}_Linux
+    cmake-parameters:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DCMAKE_MODULE_PATH=${CRAFT_PART_SRC}/sdk/cmake/modules/packages
+      - -DVCPKG_ROOT=
+    cmake-generator: Ninja
+
+    override-pull: |
+      craftctl default
+      git am "${CRAFT_PROJECT_DIR}/patches/0001-Skip-cloning-vcpkg-if-VCPKG_ROOT-is-not-set.patch"
+      git am "${CRAFT_PROJECT_DIR}/patches/0002-Fix-pkgconfig-support-for-pcre.patch"
+
+      # The change is in a submodule
+      cd sdk && git am < "${CRAFT_PROJECT_DIR}/patches/0001-Fix-non-vcpkg-support-for-icu.patch"
+    
+    build-packages:
+      - libavcodec-dev
+      - libavformat-dev
+      - libavutil-dev
+      - libcurl4-gnutls-dev
+      - libcrypto++-dev
+      - libfuse-dev
+      - libfreeimage-dev
+      - libglib2.0-dev
+      - libicu-dev
+      - libmediainfo-dev
+      - libpcre3-dev
+      - libsqlite3-dev
+      - libsodium-dev
+      - libssl-dev
+      - libswscale-dev
+      - libswresample-dev
+      - libsysprof-6-dev
+      - libuv1-dev
+      - libreadline-dev
+      - ninja-build
+      - pkgconf
+
+    stage-packages:
+      - libavcodec60
+      - libavformat60
+      - libavutil58
+      - libcrypto++8t64
+      - libfuse2t64
+      - libfreeimage3
+      - libglib2.0-0t64
+      - libicu74
+      - libmediainfo0v5
+      - libpcre3
+      - libpcrecpp0v5
+      - libsqlite3-0
+      - libsodium23
+      - libssl3t64
+      - libswscale7
+      - libswresample4
+      - libuv1t64
+      - libreadline8t64
+
+    stage:
+      # Part of libglib2.0, this app doesn't use the threading part of glib
+      - -usr/lib/*/libgthread-2.0.so*
+      # Part of libicu, this app doesn't use those shared objects
+      - -usr/lib/*/libicuio.so*
+      - -usr/lib/*/libicutest.so*
+      # Part of libpcre3, this app doesn't use those shared objects
+      - -usr/lib/*/libpcreposix.so*
+      # Part of libreadline8, this app doesn't use those shared objects
+      - -usr/lib/*/libhistory.so*
+      # Part of libfuse2, this app doesn't use those shared objects
+      - -usr/lib/*/libulockmgr.so*
+      # OpenEXR is pulled in by FreeImage, but those parts are unused
+      - -usr/lib/*/libOpenEXRCore-3_1.so*
+      - -usr/lib/*/libOpenEXRUtil-3_1.so*
+      # avcodec pulls in librist4, then libcjson1, but those parts are unused
+      - -usr/lib/*/libcjson_utils.so*
+      # avcodec pulls in libjxl0.7, then libhwy, but those parts are unused
+      - -usr/lib/*/libhwy_contrib.so*
+      - -usr/lib/*/libhwy_test.so*
+      # avcodec pulls in libtheora0, but those parts are unused
+      - -usr/lib/*/libtheora.so*
+      # avcodec pulls in libzvbi0t64, but those parts are unused
+      - -usr/lib/*/libzvbi-chains.so*
+      # FreeImage pulls in libraw23t64, but those parts are unused
+      - -usr/lib/*/libraw_r.so*
+
+apps:
+  mega-cmd:
+    command: usr/bin/mega-cmd
+    extensions:
+      - gpu
+  
+  mega-cmd-server:
+    command: usr/bin/mega-cmd-server
+    extensions:
+      - gpu

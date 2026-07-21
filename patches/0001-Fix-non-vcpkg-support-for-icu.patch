@@ -1,0 +1,27 @@
+From d4cc2a8f0e87f40d4a701674c9717fa395a7519b Mon Sep 17 00:00:00 2001
+From: Haowen Liu <liu.haowen.andy@gmail.com>
+Date: Mon, 20 Jul 2026 21:05:56 -0400
+Subject: [PATCH] Fix non-vcpkg support for icu
+
+---
+ cmake/modules/sdklib_libraries.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/cmake/modules/sdklib_libraries.cmake b/cmake/modules/sdklib_libraries.cmake
+index d50b12eca9..dab5fe6486 100644
+--- a/cmake/modules/sdklib_libraries.cmake
++++ b/cmake/modules/sdklib_libraries.cmake
+@@ -110,8 +110,8 @@ macro(load_sdklib_libraries)
+         pkg_check_modules(curl REQUIRED IMPORTED_TARGET libcurl)
+         target_link_libraries(SDKlib PRIVATE PkgConfig::curl)
+ 
+-        find_package(ICU COMPONENTS uc data REQUIRED)
+-        target_link_libraries(SDKlib PRIVATE ICU::uc ICU::data)
++        find_package(ICU COMPONENTS i18n uc data REQUIRED)
++        target_link_libraries(SDKlib PRIVATE ICU::i18n ICU::uc ICU::data)
+ 
+         if(USE_OPENSSL)
+             find_package(OpenSSL REQUIRED)
+-- 
+2.53.0
+
