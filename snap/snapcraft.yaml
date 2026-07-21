@@ -189,12 +189,147 @@ parts:
       - -usr/lib/*/libraw_r.so*
 
 apps:
+  mega-attr:
+    command: usr/bin/mega-attr
+  mega-backup:
+    command: usr/bin/mega-backup
+  mega-cancel:
+    command: usr/bin/mega-cancel
+  mega-cat:
+    command: usr/bin/mega-cat
+  mega-cd:
+    command: usr/bin/mega-cd
   mega-cmd:
     command: usr/bin/mega-cmd
-    extensions:
-      - gpu
-  
   mega-cmd-server:
     command: usr/bin/mega-cmd-server
-    extensions:
-      - gpu
+  mega-configure:
+    command: usr/bin/mega-configure
+  mega-confirm:
+    command: usr/bin/mega-confirm
+  mega-confirmcancel:
+    command: usr/bin/mega-confirmcancel
+  mega-cp:
+    command: usr/bin/mega-cp
+  mega-debug:
+    command: usr/bin/mega-debug
+  mega-deleteversions:
+    command: usr/bin/mega-deleteversions
+  mega-df:
+    command: usr/bin/mega-df
+  mega-du:
+    command: usr/bin/mega-du
+  mega-errorcode:
+    command: usr/bin/mega-errorcode
+  mega-exclude:
+    command: usr/bin/mega-exclude
+  mega-exec:
+    command: usr/bin/mega-exec
+  mega-export:
+    command: usr/bin/mega-export
+  mega-find:
+    command: usr/bin/mega-find
+  mega-ftp:
+    command: usr/bin/mega-ftp
+  mega-fuse-add:
+    command: usr/bin/mega-fuse-add
+  mega-fuse-config:
+    command: usr/bin/mega-fuse-config
+  mega-fuse-disable:
+    command: usr/bin/mega-fuse-disable
+  mega-fuse-enable:
+    command: usr/bin/mega-fuse-enable
+  mega-fuse-remove:
+    command: usr/bin/mega-fuse-remove
+  mega-fuse-show:
+    command: usr/bin/mega-fuse-show
+  mega-get:
+    command: usr/bin/mega-get
+  mega-graphics:
+    command: usr/bin/mega-graphics
+  mega-help:
+    command: usr/bin/mega-help
+  mega-https:
+    command: usr/bin/mega-https
+  mega-import:
+    command: usr/bin/mega-import
+  mega-invite:
+    command: usr/bin/mega-invite
+  mega-ipc:
+    command: usr/bin/mega-ipc
+  mega-killsession:
+    command: usr/bin/mega-killsession
+  mega-lcd:
+    command: usr/bin/mega-lcd
+  mega-log:
+    command: usr/bin/mega-log
+  mega-login:
+    command: usr/bin/mega-login
+  mega-logout:
+    command: usr/bin/mega-logout
+  mega-lpwd:
+    command: usr/bin/mega-lpwd
+  mega-ls:
+    command: usr/bin/mega-ls
+  mega-mediainfo:
+    command: usr/bin/mega-mediainfo
+  mega-mkdir:
+    command: usr/bin/mega-mkdir
+  mega-mount:
+    command: usr/bin/mega-mount
+  mega-mv:
+    command: usr/bin/mega-mv
+  mega-passwd:
+    command: usr/bin/mega-passwd
+  mega-permissions:
+    command: usr/bin/mega-permissions
+  mega-preview:
+    command: usr/bin/mega-preview
+  mega-proxy:
+    command: usr/bin/mega-proxy
+  mega-put:
+    command: usr/bin/mega-put
+  mega-pwd:
+    command: usr/bin/mega-pwd
+  mega-quit:
+    command: usr/bin/mega-quit
+  mega-reload:
+    command: usr/bin/mega-reload
+  mega-rm:
+    command: usr/bin/mega-rm
+  mega-session:
+    command: usr/bin/mega-session
+  mega-share:
+    command: usr/bin/mega-share
+  mega-showpcr:
+    command: usr/bin/mega-showpcr
+  mega-signup:
+    command: usr/bin/mega-signup
+  mega-speedlimit:
+    command: usr/bin/mega-speedlimit
+  mega-sync:
+    command: usr/bin/mega-sync
+  mega-sync-config:
+    command: usr/bin/mega-sync-config
+  mega-sync-ignore:
+    command: usr/bin/mega-sync-ignore
+  mega-sync-issues:
+    command: usr/bin/mega-sync-issues
+  mega-thumbnail:
+    command: usr/bin/mega-thumbnail
+  mega-transfers:
+    command: usr/bin/mega-transfers
+  mega-tree:
+    command: usr/bin/mega-tree
+  mega-userattr:
+    command: usr/bin/mega-userattr
+  mega-users:
+    command: usr/bin/mega-users
+  mega-version:
+    command: usr/bin/mega-version
+  mega-webdav:
+    command: usr/bin/mega-webdav
+  mega-whoami:
+    command: usr/bin/mega-whoami
+
+  
