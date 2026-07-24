@@ -48,6 +48,8 @@ parts:
     after:
       - gn
     plugin: nil
+    build-packages:
+      - curl
     override-pull: |
       git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
       git -C depot_tools checkout 1709e20d5ca2afe97bfa726168719c3b77eb9883
