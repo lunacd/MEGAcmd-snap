@@ -1,7 +1,7 @@
 From f2f65e837d2001ee565a46d21ee13e452b378bd4 Mon Sep 17 00:00:00 2001
 From: Haowen Liu <liu.haowen.andy@gmail.com>
 Date: Mon, 20 Jul 2026 20:06:14 -0400
-Subject: [PATCH 2/3] Fix pkgconfig support for pcre
+Subject: [PATCH 2/4] Fix pkgconfig support for pcre
 
 ---
  build/cmake/modules/megacmd_libraries.cmake | 4 ++--

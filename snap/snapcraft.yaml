@@ -1,6 +1,8 @@
 name: lunacd-megacmd
+title: MEGAcmd
 base: core24
 version: '2.5.2'
+license: Proprietary
 summary: Command Line Interactive and Scriptable Application to access MEGA
 description: |
   MEGAcmd provides non UI access to MEGA services. It intends to offer all the
@@ -10,8 +12,18 @@ description: |
   Unofficial build of MEGAcmd. Not affiliated with, endorsed by, or supported by
   MEGA Limited.
 
-grade: devel
-confinement: devmode
+contact:
+  - "mailto:liu.haowen.andy@gmail.com"
+source-code:
+  - https://github.com/meganz/MEGAcmd
+  - https://github.com/lunacd/MEGAcmd-snap
+website:
+  - https://github.com/meganz/MEGAcmd
+issues:
+  - https://github.com/lunacd/MEGAcmd-snap/issues
+
+grade: stable
+confinement: strict
 
 parts:
   gn:
@@ -114,6 +126,8 @@ parts:
       craftctl default
       git am "${CRAFT_PROJECT_DIR}/patches/0001-Skip-cloning-vcpkg-if-VCPKG_ROOT-is-not-set.patch"
       git am "${CRAFT_PROJECT_DIR}/patches/0002-Fix-pkgconfig-support-for-pcre.patch"
+      git am "${CRAFT_PROJECT_DIR}/patches/0003-Update-sdk-to-fix-non-vcpkg-support-for-icu.patch"
+      git am "${CRAFT_PROJECT_DIR}/patches/0004-Respect-SNAP-when-invoking-server.patch"
 
       # The change is in a submodule
       cd sdk && git am < "${CRAFT_PROJECT_DIR}/patches/0001-Fix-non-vcpkg-support-for-icu.patch"
@@ -192,147 +206,495 @@ parts:
 apps:
   mega-attr:
     command: usr/bin/mega-attr
-  mega-backup:
-    command: usr/bin/mega-backup
-  mega-cancel:
-    command: usr/bin/mega-cancel
-  mega-cat:
-    command: usr/bin/mega-cat
-  mega-cd:
-    command: usr/bin/mega-cd
-  mega-cmd:
-    command: usr/bin/mega-cmd
-  mega-cmd-server:
-    command: usr/bin/mega-cmd-server
     extensions:
       - gpu
+    plugs:
+      - network
+      - network-bind
+  mega-backup:
+    command: usr/bin/mega-backup
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
+  mega-cancel:
+    command: usr/bin/mega-cancel
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
+  mega-cat:
+    command: usr/bin/mega-cat
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
+  mega-cd:
+    command: usr/bin/mega-cd
+    extensions:
+      - gpu 
+    plugs:
+      - network
+      - network-bind
+  mega-cmd:
+    command: usr/bin/mega-cmd
+    extensions:
+      - gpu
+    plugs:
+      - home
+      - network
+      - network-bind
   mega-configure:
     command: usr/bin/mega-configure
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-confirm:
     command: usr/bin/mega-confirm
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-confirmcancel:
     command: usr/bin/mega-confirmcancel
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-cp:
     command: usr/bin/mega-cp
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-debug:
     command: usr/bin/mega-debug
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-deleteversions:
     command: usr/bin/mega-deleteversions
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-df:
     command: usr/bin/mega-df
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-du:
     command: usr/bin/mega-du
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-errorcode:
     command: usr/bin/mega-errorcode
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-exclude:
     command: usr/bin/mega-exclude
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-exec:
     command: usr/bin/mega-exec
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-export:
     command: usr/bin/mega-export
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-find:
     command: usr/bin/mega-find
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-ftp:
     command: usr/bin/mega-ftp
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-add:
     command: usr/bin/mega-fuse-add
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-config:
     command: usr/bin/mega-fuse-config
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-disable:
     command: usr/bin/mega-fuse-disable
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-enable:
     command: usr/bin/mega-fuse-enable
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-remove:
     command: usr/bin/mega-fuse-remove
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-fuse-show:
     command: usr/bin/mega-fuse-show
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-get:
     command: usr/bin/mega-get
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-graphics:
     command: usr/bin/mega-graphics
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-help:
     command: usr/bin/mega-help
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-https:
     command: usr/bin/mega-https
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-import:
     command: usr/bin/mega-import
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-invite:
     command: usr/bin/mega-invite
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-ipc:
     command: usr/bin/mega-ipc
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-killsession:
     command: usr/bin/mega-killsession
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-lcd:
     command: usr/bin/mega-lcd
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-log:
     command: usr/bin/mega-log
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-login:
     command: usr/bin/mega-login
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-logout:
     command: usr/bin/mega-logout
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-lpwd:
     command: usr/bin/mega-lpwd
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-ls:
     command: usr/bin/mega-ls
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-mediainfo:
     command: usr/bin/mega-mediainfo
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-mkdir:
     command: usr/bin/mega-mkdir
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-mount:
     command: usr/bin/mega-mount
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-mv:
     command: usr/bin/mega-mv
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-passwd:
     command: usr/bin/mega-passwd
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-permissions:
     command: usr/bin/mega-permissions
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-preview:
     command: usr/bin/mega-preview
+    extensions:
+      - gpu
+    plugs:
+      - home
+      - network
+      - network-bind
   mega-proxy:
     command: usr/bin/mega-proxy
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-put:
     command: usr/bin/mega-put
+    extensions:
+      - gpu
+    plugs:
+      - home
+      - network
+      - network-bind
   mega-pwd:
     command: usr/bin/mega-pwd
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-quit:
     command: usr/bin/mega-quit
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-reload:
     command: usr/bin/mega-reload
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-rm:
     command: usr/bin/mega-rm
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-session:
     command: usr/bin/mega-session
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-share:
     command: usr/bin/mega-share
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-showpcr:
     command: usr/bin/mega-showpcr
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-signup:
     command: usr/bin/mega-signup
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-speedlimit:
     command: usr/bin/mega-speedlimit
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-sync:
     command: usr/bin/mega-sync
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-sync-config:
     command: usr/bin/mega-sync-config
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-sync-ignore:
     command: usr/bin/mega-sync-ignore
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-sync-issues:
     command: usr/bin/mega-sync-issues
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-thumbnail:
     command: usr/bin/mega-thumbnail
+    extensions:
+      - gpu
+    plugs:
+      - home
+      - network
+      - network-bind
   mega-transfers:
     command: usr/bin/mega-transfers
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-tree:
     command: usr/bin/mega-tree
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-userattr:
     command: usr/bin/mega-userattr
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-users:
     command: usr/bin/mega-users
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-version:
     command: usr/bin/mega-version
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-webdav:
     command: usr/bin/mega-webdav
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind
   mega-whoami:
     command: usr/bin/mega-whoami
-
-  
+    extensions:
+      - gpu
+    plugs:
+      - network
+      - network-bind

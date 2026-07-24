@@ -1,0 +1,19 @@
+From 4490514c33492d52cdcac1ef770cdba7460cfb8b Mon Sep 17 00:00:00 2001
+From: Haowen Liu <liu.haowen.andy@gmail.com>
+Date: Mon, 20 Jul 2026 21:06:40 -0400
+Subject: [PATCH 3/4] Update sdk to fix non-vcpkg support for icu
+
+---
+ sdk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sdk b/sdk
+index fae76a36..d4cc2a8f 160000
+--- a/sdk
++++ b/sdk
+@@ -1 +1 @@
+-Subproject commit fae76a36d60484657fbdf442b7b917ccc4fbad77
++Subproject commit d4cc2a8f0e87f40d4a701674c9717fa395a7519b
+-- 
+2.53.0
+
