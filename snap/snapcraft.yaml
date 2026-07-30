@@ -1,6 +1,6 @@
 name: lunacd-megacmd
 title: MEGAcmd
-base: core24
+base: core24 # On core24 to get pcre3
 version: '2.5.2'
 license: Proprietary
 summary: Command Line Interactive and Scriptable Application to access MEGA
