@@ -133,6 +133,11 @@ parts:
 
       # The change is in a submodule
       cd sdk && git am < "${CRAFT_PROJECT_DIR}/patches/0001-Fix-non-vcpkg-support-for-icu.patch"
+
+    override-prime: |
+      craftctl default
+      install -D -m 0644 "${CRAFT_PROJECT_DIR}/license/LICENSE.txt" \
+        "${CRAFT_PRIME}/meta/LICENSE.txt"
     
     build-packages:
       - libavcodec-dev
